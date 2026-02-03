@@ -322,6 +322,70 @@ window.<span class="fn">open</span>(requestUrl, <span class="str">'_blank'</span
 
             <hr>
 
+            <h2 id="iframe">Iframe Integration</h2>
+            <p>Embed the verification flow directly in your page using an iframe.</p>
+
+            <h3 id="iframe-setup">Generate the verification URL</h3>
+            <pre><code><span class="kw">const</span> <span class="cn">reclaimProofRequest</span> = <span class="kw">await</span> ReclaimProofRequest.<span class="fn">init</span>(
+    <span class="str">'APP_ID'</span>,
+    <span class="str">'APP_SECRET'</span>,
+    <span class="str">'PROVIDER_ID'</span>
+)
+
+<span class="kw">await</span> reclaimProofRequest.<span class="fn">startSession</span>({
+    <span class="fn">onSuccess</span>: (proof) => {
+        console.<span class="fn">log</span>(<span class="str">'Verification successful'</span>, proof)
+    },
+    <span class="fn">onError</span>: (error) => {
+        console.<span class="fn">error</span>(<span class="str">'Verification failed'</span>, error)
+    }
+})
+
+<span class="kw">const</span> <span class="cn">requestUrl</span> = <span class="kw">await</span> reclaimProofRequest.<span class="fn">getRequestUrl</span>()</code></pre>
+
+            <h3 id="iframe-embed">Embed in iframe</h3>
+            <pre><code><span class="kw">&lt;iframe</span>
+    id=<span class="str">"reclaim-iframe"</span>
+    src=<span class="str">""</span>
+    width=<span class="str">"100%"</span>
+    height=<span class="str">"600"</span>
+    frameborder=<span class="str">"0"</span>
+    allow=<span class="str">"camera; microphone"</span>
+<span class="kw">&gt;&lt;/iframe&gt;</span>
+
+<span class="kw">&lt;script&gt;</span>
+    <span class="cm">// Set the iframe src to the verification URL</span>
+    document.<span class="fn">getElementById</span>(<span class="str">'reclaim-iframe'</span>).src = requestUrl
+<span class="kw">&lt;/script&gt;</span></code></pre>
+
+            <h3 id="iframe-styling">Styling the iframe container</h3>
+            <pre><code><span class="kw">&lt;style&gt;</span>
+.<span class="cn">reclaim-container</span> {
+    <span class="cn">width</span>: <span class="str">100%</span>;
+    <span class="cn">max-width</span>: <span class="str">450px</span>;
+    <span class="cn">margin</span>: <span class="str">0 auto</span>;
+    <span class="cn">border-radius</span>: <span class="str">12px</span>;
+    <span class="cn">overflow</span>: <span class="str">hidden</span>;
+    <span class="cn">box-shadow</span>: <span class="str">0 4px 24px rgba(0,0,0,0.2)</span>;
+}
+.<span class="cn">reclaim-container</span> iframe {
+    <span class="cn">display</span>: <span class="str">block</span>;
+    <span class="cn">border</span>: <span class="str">none</span>;
+}
+<span class="kw">&lt;/style&gt;</span>
+
+<span class="kw">&lt;div</span> class=<span class="str">"reclaim-container"</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;iframe</span> id=<span class="str">"reclaim-iframe"</span> width=<span class="str">"100%"</span> height=<span class="str">"600"</span><span class="kw">&gt;&lt;/iframe&gt;</span>
+<span class="kw">&lt;/div&gt;</span></code></pre>
+
+            <ul>
+                <li>The iframe loads the Reclaim verification portal directly in your page</li>
+                <li>Callbacks (<code>onSuccess</code>, <code>onError</code>) still fire via the SDK session</li>
+                <li>Add <code>allow="camera; microphone"</code> if the provider requires device access</li>
+            </ul>
+
+            <hr>
+
             <h2 id="errors">Common Errors</h2>
 
             <h3 id="error-1">ReclaimProofRequest is not defined</h3>
@@ -419,6 +483,12 @@ window.<span class="fn">open</span>(requestUrl, <span class="str">'_blank'</span
                 <ul class="sub">
                     <li><a href="#browser-import">Import from CDN</a></li>
                     <li><a href="#browser-init">Initialize with browser options</a></li>
+                </ul>
+                <li><a href="#iframe">Iframe Integration</a></li>
+                <ul class="sub">
+                    <li><a href="#iframe-setup">Generate the verification URL</a></li>
+                    <li><a href="#iframe-embed">Embed in iframe</a></li>
+                    <li><a href="#iframe-styling">Styling the iframe</a></li>
                 </ul>
                 <li><a href="#errors">Common Errors</a></li>
                 <li><a href="#versions">SDK Versions</a></li>
